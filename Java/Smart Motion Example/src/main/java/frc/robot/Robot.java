@@ -51,8 +51,14 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
  * effect of the GUI layout.
  */
 public class Robot extends TimedRobot {
-  private static final int deviceID = 1;
+  private static final int deviceID = 14;
+  private static final int followID = 15;
+  private static final int neutralID0 = 20;
+  private static final int neutralID1 = 1;
   private CANSparkMax m_motor;
+  private CANSparkMax m_follow;
+  private CANSparkMax m_neutral0;
+  private CANSparkMax m_neutral1;
   private CANPIDController m_pidController;
   private CANEncoder m_encoder;
   public double kP, kI, kD, kIz, kFF, kMaxOutput, kMinOutput, maxRPM, maxVel, minVel, maxAcc, allowedErr;
@@ -61,6 +67,9 @@ public class Robot extends TimedRobot {
   public void robotInit() {
     // initialize motor
     m_motor = new CANSparkMax(deviceID, MotorType.kBrushless);
+    m_follow = new CANSparkMax(followID, MotorType.kBrushless);
+    m_neutral0 = new CANSparkMax(neutralID0, MotorType.kBrushless);
+    m_neutral1 = new CANSparkMax(neutralID1, MotorType.kBrushless);
 
     /**
      * The RestoreFactoryDefaults method can be used to reset the configuration parameters
@@ -72,6 +81,11 @@ public class Robot extends TimedRobot {
     // initialze PID controller and encoder objects
     m_pidController = m_motor.getPIDController();
     m_encoder = m_motor.getEncoder();
+
+
+    m_follow.follow(m_motor);
+    m_neutral0.stopMotor();
+    m_neutral1.stopMotor();
 
     // PID coefficients
     kP = 5e-5; 
